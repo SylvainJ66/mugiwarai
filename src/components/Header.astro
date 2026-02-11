@@ -1,0 +1,68 @@
+---
+import PirateFlag from './PirateFlag.astro';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo-link">
+      <PirateFlag size={50} />
+      <span class="site-title">MugiwarAI</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/profile">Profile</a>
+      <a href="/#articles">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-bg-light);
+    border-bottom: 2px solid var(--color-primary);
+    padding: 0.6rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-white);
+  }
+
+  .logo-link:hover {
+    color: var(--color-yellow);
+  }
+
+  .site-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  nav a {
+    color: var(--color-text);
+    font-weight: 500;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  nav a:hover {
+    color: var(--color-yellow);
+    border-bottom-color: var(--color-yellow);
+  }
+</style>

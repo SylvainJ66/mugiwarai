@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const categoryLabelMap: Record<string, string> = {
+  craftsmanship: 'Craftsmanship',
+  architecture: 'Architecture',
+  devops: 'DevOps & Cloud',
+  'ai-dotnet': 'AI & .NET',
+  medical: 'Medical',
+  quantum: 'Quantum',
+};
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const categories = ['craftsmanship', 'architecture', 'devops', 'ai-dotnet', 'medical', 'quantum'];
+
+  return categories.map((category) => {
+    const filtered = posts
+      .filter((post) => post.data.category === category)
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    return { params: { category }, props: { posts: filtered } };
+  });
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+const label = categoryLabelMap[category] ?? category;
+---
+
+<BaseLayout title={`${label} - MugiwarAI`}>
+  <section class="container category-page">
+    <a href="/" class="back-link">&larr; Back to home</a>
+    <h1>{label}</h1>
+    <p class="post-count">{posts.length} article{posts.length !== 1 ? 's' : ''}</p>
+    <div class="article-grid">
+      {posts.map((post) => (
+        <BlogCard
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          category={post.data.category}
+          slug={post.id}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .category-page {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .post-count {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

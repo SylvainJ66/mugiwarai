@@ -1,0 +1,32 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="quote">"I'm gonna be King of the Pirates!" &mdash; Monkey D. Luffy</p>
+    <p class="copyright">&copy; {year} MugiwarAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-bg-light);
+    border-top: 2px solid var(--color-primary);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  .quote {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-yellow);
+    margin-bottom: 0.5rem;
+  }
+
+  .copyright {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+</style>

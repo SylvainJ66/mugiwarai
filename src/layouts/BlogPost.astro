@@ -1,0 +1,163 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    date: string;
+    category: string;
+    tags: string[];
+  };
+}
+
+const { frontmatter } = Astro.props;
+
+const tagClassMap: Record<string, string> = {
+  craftsmanship: 'tag-craftsmanship',
+  architecture: 'tag-architecture',
+  devops: 'tag-devops',
+  'ai-dotnet': 'tag-ai-dotnet',
+  medical: 'tag-medical',
+  quantum: 'tag-quantum',
+};
+const categoryLabelMap: Record<string, string> = {
+  craftsmanship: 'Craftsmanship',
+  architecture: 'Architecture',
+  devops: 'DevOps & Cloud',
+  'ai-dotnet': 'AI & .NET',
+  medical: 'Medical',
+  quantum: 'Quantum',
+};
+const tagClass = tagClassMap[frontmatter.category] ?? 'tag-craftsmanship';
+const categoryLabel = categoryLabelMap[frontmatter.category] ?? frontmatter.category;
+
+const formattedDate = new Date(frontmatter.date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={`${frontmatter.title} | MugiwarAI`} description={frontmatter.description}>
+  <article class="container post">
+    <header class="post-header">
+      <div class="post-meta">
+        <span class={`tag ${tagClass}`}>{categoryLabel}</span>
+        <time datetime={frontmatter.date}>{formattedDate}</time>
+      </div>
+      <h1>{frontmatter.title}</h1>
+      <p class="post-desc">{frontmatter.description}</p>
+      {frontmatter.tags && (
+        <div class="post-tags">
+          {frontmatter.tags.map((tag: string) => (
+            <span class="pill">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+    <div class="post-content">
+      <slot />
+    </div>
+    <footer class="post-footer">
+      <a href="/">&larr; Back to all articles</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    max-width: 780px;
+  }
+
+  .post-header {
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid var(--color-bg-card);
+    padding-bottom: 1.5rem;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  time {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  h1 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-desc {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .pill {
+    background: var(--color-bg-light);
+    color: var(--color-text-muted);
+    padding: 0.2em 0.6em;
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  .post-content {
+    font-size: 1.08rem;
+    line-height: 1.85;
+  }
+
+  .post-content :global(h2) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-yellow);
+  }
+
+  .post-content :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-content :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--color-yellow);
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    background: var(--color-bg-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--color-bg-card);
+  }
+</style>

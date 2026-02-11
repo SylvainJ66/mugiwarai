@@ -1,0 +1,100 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  category: string;
+  slug: string;
+}
+
+const { title, description, date, category, slug } = Astro.props;
+
+const tagClassMap: Record<string, string> = {
+  craftsmanship: 'tag-craftsmanship',
+  architecture: 'tag-architecture',
+  devops: 'tag-devops',
+  'ai-dotnet': 'tag-ai-dotnet',
+  medical: 'tag-medical',
+  quantum: 'tag-quantum',
+};
+const tagClass = tagClassMap[category] ?? 'tag-craftsmanship';
+
+const categoryLabelMap: Record<string, string> = {
+  craftsmanship: 'Craftsmanship',
+  architecture: 'Architecture',
+  devops: 'DevOps & Cloud',
+  'ai-dotnet': 'AI & .NET',
+  medical: 'Medical',
+  quantum: 'Quantum',
+};
+const categoryLabel = categoryLabelMap[category] ?? category;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<a href={`/blog/${slug}`} class="card-link">
+  <article class="blog-card">
+    <div class="card-header">
+      <span class={`tag ${tagClass}`}>{categoryLabel}</span>
+      <time datetime={date.toISOString()}>{formattedDate}</time>
+    </div>
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </article>
+</a>
+
+<style>
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+  }
+
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background: var(--color-bg-card);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(196, 30, 58, 0.15);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  time {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+</style>

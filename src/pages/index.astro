@@ -1,0 +1,257 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PirateFlag from '../components/PirateFlag.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const latestPosts = posts.slice(0, 3);
+
+const categories = [
+  { key: 'craftsmanship', label: 'Craftsmanship', color: '#1A237E' },
+  { key: 'architecture', label: 'Architecture', color: '#C41E3A' },
+  { key: 'medical', label: 'Medical', color: '#00897B' },
+  { key: 'ai-dotnet', label: 'AI & .NET', color: '#7C4DFF' },
+  { key: 'devops', label: 'DevOps & Cloud', color: '#F4C542' },
+  { key: 'quantum', label: 'Quantum', color: '#E91E63' },
+] as const;
+
+const categoryCounts = categories.map((cat) => ({
+  ...cat,
+  count: posts.filter((p) => p.data.category === cat.key).length,
+}));
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <PirateFlag size={140} />
+      <h1>MugiwarAI</h1>
+      <p class="tagline">Coding the Grand Line</p>
+      <p class="subtitle">
+        Tech blog exploring <strong>AI</strong>, <strong>Dotnet</strong> and <strong>Medical</strong> using the AI fruit
+      </p>
+    </div>
+    <div class="waves">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path class="wave wave-1" d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120Z" />
+        <path class="wave wave-2" d="M0,80 C320,20 640,100 960,60 C1120,40 1320,90 1440,70 L1440,120 L0,120Z" />
+        <path class="wave wave-3" d="M0,90 C240,50 480,110 720,70 C960,30 1200,100 1440,80 L1440,120 L0,120Z" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Explore Themes -->
+  <section class="container themes-section">
+    <h2>Explore Themes</h2>
+    <div class="themes-grid">
+      {categoryCounts.map((cat) => (
+        <a href={`/blog/category/${cat.key}`} class="theme-card" style={`border-left-color: ${cat.color}`}>
+          <span class="theme-label">{cat.label}</span>
+          <span class="theme-count">{cat.count} article{cat.count !== 1 ? 's' : ''}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section id="articles" class="container articles-section">
+    <h2>Latest Articles</h2>
+    <div class="article-grid">
+      {latestPosts.map((post) => (
+        <BlogCard
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          category={post.data.category}
+          slug={post.id}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 5rem 0 7rem;
+    background: linear-gradient(
+      180deg,
+      var(--color-bg-light) 0%,
+      #0a1628 30%,
+      #0d2137 60%,
+      #112a4a 100%
+    );
+    border-bottom: 3px solid var(--color-primary);
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* Animated waves */
+  .waves {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    z-index: 1;
+  }
+
+  .waves svg {
+    display: block;
+    width: 200%;
+    height: 100%;
+  }
+
+  .wave {
+    fill-opacity: 0.3;
+  }
+
+  .wave-1 {
+    fill: #1a5276;
+    animation: swell 7s ease-in-out infinite;
+  }
+
+  .wave-2 {
+    fill: #1b4f72;
+    fill-opacity: 0.4;
+    animation: swell 5s ease-in-out infinite reverse;
+  }
+
+  .wave-3 {
+    fill: #154360;
+    fill-opacity: 0.25;
+    animation: swell 9s ease-in-out infinite;
+  }
+
+  @keyframes swell {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-25%);
+    }
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, var(--color-yellow), var(--color-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--color-yellow);
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    max-width: 500px;
+    font-size: 1rem;
+  }
+
+  .subtitle strong {
+    color: var(--color-white);
+  }
+
+  /* Themes section */
+  .themes-section {
+    padding-top: 3rem;
+  }
+
+  .themes-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-yellow);
+  }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .theme-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: var(--color-bg-card);
+    border-left: 4px solid transparent;
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .theme-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .theme-label {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--color-white);
+  }
+
+  .theme-count {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Articles section */
+  .articles-section {
+    padding-top: 3rem;
+  }
+
+  .articles-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-yellow);
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 900px) {
+    .themes-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .article-grid {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    .tagline {
+      font-size: 1.2rem;
+    }
+    .themes-grid {
+      grid-template-columns: 1fr;
+    }
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

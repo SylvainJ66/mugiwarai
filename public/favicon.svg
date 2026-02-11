@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Straw Hat favicon -->
+  <!-- Hat brim -->
+  <ellipse cx="50" cy="52" rx="45" ry="10" fill="#F4C542"/>
+  <!-- Hat dome -->
+  <path d="M 25 52 Q 25 22 50 18 Q 75 22 75 52" fill="#F4C542"/>
+  <!-- Hat band -->
+  <rect x="27" y="42" width="46" height="8" rx="2" fill="#C41E3A"/>
+</svg>
